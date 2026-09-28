@@ -6,14 +6,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
+    "pymupdf>=1.28.2",
+    "python-multipart>=0.0.32",
+    "sqlmodel>=0.0.47",
 ]
 
-[project.scripts]
-book-guide = "book_guide:main"
-
-[build-system]
-requires = ["uv_build>=0.12.13,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false
 
 [tool.fastapi]
-entrypoint = "main:app"
+entrypoint = "src.main:app"
