@@ -6,7 +6,7 @@ import pymupdf as pdf
 
 from src.config import BASE_DIR
 from src.database import SessionDep
-from src.books.models import Book
+from src.books.models import Book, BookToc
 
 # temporary directory for uploaded files
 UPLOAD_DIR = BASE_DIR / 'uploads'
@@ -43,11 +43,18 @@ async def create_book(upload_file: UploadFile, session: SessionDep) -> Book:
     book = Book(file_name=file_name, file_path=str(book_path))
 
     session.add(book)
-    session.commit()
-    session.refresh(book)
+    session.flush()
 
     toc = doc.get_toc()
-    print(toc)
+    if toc:
+      contents = [
+        BookToc(title=title, page_number=page_number, page_level=page_level, book_id=book.id)
+        for page_level, title, page_number in toc
+      ]
+      session.add_all(contents)
+
+    session.commit()
+    session.refresh(book)
 
   return book
 
