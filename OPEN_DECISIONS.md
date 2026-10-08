@@ -41,7 +41,7 @@ OCR for image-only PDFs, or just return a clear error when a page has no extract
 - [ ] Decision:
 
 ## 8. Persistence and ops
-- `create_all` with no migrations: add Alembic now, or delete the DB during early dev?
+- Decided: Postgres with Alembic migrations, replacing SQLite and `create_all`. See README.
 - Docker doesn't mount `data/` or `uploads/`; they're lost on container restart.
 - Uploaded PDFs: local `uploads/` during development, move to S3 later (decided). Open: local S3 stand-in for dev (e.g. MinIO), local cache of fetched files.
 - Decided: put file storage behind a small interface (save, read/open, delete) so the later switch to S3 touches one place instead of the routes. Not implemented yet; we finish design first.

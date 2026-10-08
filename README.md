@@ -84,10 +84,15 @@ Work in progress. Nothing here is final until marked **Decided**. See `TIMELINE.
 - Storage sits behind a small interface (save, read/open, delete) so switching from local disk to S3 changes one place, not the routes. Decided, not implemented yet.
 - Tradeoff: no duplicated data and a smaller database; but every read needs the file, so a fetch from S3 adds latency and a failure mode (a local cache of recently used files could help), and `Book.file_path` would hold an S3 key instead of a local path. Opening the PDF is cheap for PyMuPDF. If chunks go into a vector store later, they carry their own text.
 
+**Database: Postgres with Alembic migrations.**
+- Postgres replaces SQLite, and Alembic replaces `create_all` for schema changes. Alembic is the standard migration tool for SQLAlchemy/SQLModel and can autogenerate migrations from the models.
+- Why now: development matches production, the timeline already needs Postgres (per-user reading progress, hosted deploy where local disk is ephemeral), and the Phase 1 schema changes are the first migrations.
+- Tradeoff: more setup (a Postgres container, `DATABASE_URL`, a driver, Alembic config), local runs need the database up, and tests need a database. Autogenerate can miss things such as renamed columns, so migrations must be reviewed.
+- Local dev plan: run only the database in Docker; keep `uv run fastapi dev` for the app.
+
 ### Under discussion (later phases)
 
 - **RAG over the whole book vs. the current range as context.** The timeline is RAG-first (chunk, embed, retrieve, fall back to web); the original idea was to use the section being read as context. They can combine: the current page or section scopes or boosts retrieval. Tradeoffs: RAG handles long sections and cross-section questions but adds chromadb, sentence-transformers (torch, a heavy image) and chunking; range-as-context is simple but limited by the context window.
-- **Database.** SQLite (current) is simple for a local single-user tool; Postgres (timeline) suits per-user progress tracking and a hosted deploy where the disk is ephemeral. Either way, schema changes need migrations (Alembic) rather than `create_all`.
 - **Users and auth.** The timeline tracks reading progress per user; that implies a users table and auth, which the plan does not yet cover.
 - **Embeddings.** Local sentence-transformers is free but heavy to deploy; a hosted embeddings API is lighter but costs money and adds a dependency.
 - **Web fallback.** Planned as an automatic step when retrieval confidence is low (similarity score vs. an LLM check). Open: how to measure confidence, and whether the user can toggle it.
