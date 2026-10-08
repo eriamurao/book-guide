@@ -52,8 +52,9 @@ OCR for image-only PDFs, or just return a clear error when a page has no extract
 - [ ] `HTTPException(details=...)` should be `detail=`.
 - [ ] `delete_book` joins `BASE_DIR / book.file_path` while `file_path` is stored absolute.
 
-- [ ] `.env` is tracked by git (not ignored). Fix: `git rm --cached .env`, add `.env` to `.gitignore`, add `.env.example` with key names only. Check `git log --oneline -- .env` for past commits of the key; rotate `ANTHROPIC_API_KEY` if it was committed/pushed. (Committing `.env` with empty values + ignoring it does not work: git keeps tracking it.)
-- [ ] `src/config.py` doesn't load `.env` yet (python-dotenv or pydantic-settings).
+- [x] `.env` was tracked by git. Fixed: untracked with `git rm --cached .env`, ignored in `.gitignore`, `.env.example` added.
+- [ ] `.env` is still in the history of past commits. Check `git log --oneline -- .env`; rotate `ANTHROPIC_API_KEY` if a real key was committed/pushed.
+- [x] `src/config.py` now loads `.env` with pydantic-settings (`Settings.database_url`).
 
 ## Suggested order (tentative)
 1. Fix upload and TOC end pages

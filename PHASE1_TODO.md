@@ -7,17 +7,20 @@ Ordered checklist for implementing Phase 1. Design lives in `README.md`; this fi
 
 ## 1. Housekeeping
 - [ ] `git log --oneline -- .env` to see if the key was ever committed; rotate `ANTHROPIC_API_KEY` if it was pushed
-- [ ] `git rm --cached .env`, add `.env` to `.gitignore`, add `.env.example` (key names only)
+- [x] `git rm --cached .env`, add `.env` to `.gitignore`, add `.env.example` (key names only)
 - [ ] Clean up `uploads/`: three 0-byte files from failed uploads, same books uploaded several times (keep one copy of each for testing)
 
 ## 2. Dependencies and config
-- [ ] Add `pytest` (dev group) and `python-dotenv` (or pydantic-settings)
-- [ ] Add a Postgres driver (psycopg) and `alembic`
-- [ ] Load `.env` in `src/config.py`; add `DATABASE_URL`
+- [ ] Add `pytest` (dev group)
+- [x] Add `pydantic-settings` (used instead of python-dotenv)
+- [x] Add a Postgres driver (`psycopg[binary]`, psycopg 3)
+- [ ] Add `alembic`
+- [x] Load `.env` in `src/config.py` (`Settings`, `get_settings()`); add `DATABASE_URL`
+  - With psycopg 3 the URL must use `postgresql+psycopg://`; plain `postgresql://` makes SQLAlchemy look for psycopg2
 
 ## 3. Database
 - [ ] Add a `db` service to `compose.yaml`, run only the DB in Docker for local dev
-- [ ] Point `src/database.py` at `DATABASE_URL`
+- [x] Point `src/database.py` at `DATABASE_URL`
 - [ ] Set up Alembic, drop `create_all` from startup
 
 ## 4. Models

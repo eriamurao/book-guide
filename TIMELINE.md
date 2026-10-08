@@ -13,12 +13,14 @@ Related: `OPEN_DECISIONS.md` (design questions and known bugs).
   - [ ] chromadb (pending open decision #2: RAG vs range-as-context)
   - [ ] sentence-transformers (same; pulls in torch, heavy for Docker)
   - [ ] anthropic
-  - [ ] python-dotenv
+  - [x] pydantic-settings (replaces python-dotenv; loads `.env`)
+  - [x] psycopg[binary] (Postgres driver)
+  - [ ] alembic
   - [ ] pytest
 - [ ] API keys in `.env`
   - [x] Anthropic API key (`ANTHROPIC_API_KEY` present)
   - [ ] Tavily API key (only if using it for web fallback)
-  - [ ] `.env` untracked from git and ignored, `.env.example` added (see known bugs)
+  - [x] `.env` untracked from git and ignored, `.env.example` added (past commits still contain it; see known bugs)
 - [x] Bare FastAPI "hello world" runs
   - Command is `uv run fastapi dev src/main.py` (src layout), not `uvicorn main:app --reload`
 
@@ -37,7 +39,7 @@ Goal: upload a PDF, get it split into sections.
   - Heading heuristics deferred until a real need appears
   - User-made TOCs (`source = 'user'`, immutable once finalized) are a later extension
 - [ ] Store book metadata (file name, sections, page ranges) in the database
-  - Models exist (`Book`, `BookToc`) but use SQLite, not Postgres as the timeline says; decide whether to switch (open decision #8)
+  - Models exist (`Book`, `BookToc`) and now run on Postgres via `DATABASE_URL` (decided, see README); Alembic migrations are not set up yet, tables are still made with `create_all`
   - `Book` has no `title` field yet, only `file_name`
 - [ ] Checkpoint: upload a PDF and get back clean JSON of `{section_title, start_page, end_page, text}`
 
