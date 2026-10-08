@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
   database_url: str
 
-  model_config = SettingsConfigDict(env_file='.env')
+  model_config = SettingsConfigDict(env_file=BASE_DIR / '.env')
 
 @lru_cache
 def get_settings() -> Settings:

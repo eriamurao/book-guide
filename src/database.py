@@ -3,10 +3,7 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, SQLModel, create_engine
 
-from src.config import BASE_DIR, get_settings
-
-DATA_DIR = BASE_DIR / 'data'
-DATA_DIR.mkdir(exist_ok=True)
+from src.config import get_settings
 
 settings = get_settings()
 
