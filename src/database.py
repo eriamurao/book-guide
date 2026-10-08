@@ -3,16 +3,14 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, SQLModel, create_engine
 
-from src.config import BASE_DIR
+from src.config import BASE_DIR, get_settings
 
 DATA_DIR = BASE_DIR / 'data'
 DATA_DIR.mkdir(exist_ok=True)
 
-sqlite_file_name = DATA_DIR / 'book-guide.db'
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+settings = get_settings()
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+engine = create_engine(settings.database_url)
 
 def create_db_and_tables():
   SQLModel.metadata.create_all(engine)
